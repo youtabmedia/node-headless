@@ -20,7 +20,7 @@ function findFreeServernum(servernum, callback) {
 }
 
 module.exports = function headless(serverNum, options, callback) {
-    findFreeServernum(99, function(servernum) {
+    findFreeServernum(serverNum, function(servernum) {
         var so = {
             detached: options.detached,
             env: options.env || null
