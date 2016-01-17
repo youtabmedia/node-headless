@@ -19,35 +19,17 @@ function findFreeServernum(servernum, callback) {
     });
 }
 
-module.exports = function headless(options, startnum, callback) {
-    // arg1 in headless(arg1, arg2) will be interpreted as startnum or options depending on the type of the parameter
-    if (!callback && !startnum) {
-        callback = options;
-        options = null;
-        startnum = 99;
-    }
-    else if (!callback && startnum){
-        callback = startnum;
-        if (typeof options === 'object') {
-            startnum = 99;
-        }
-        else if (typeof options === 'number') {
-            startnum = options;
-            options = null;
-        }
-    }
-
-    findFreeServernum(startnum, function(servernum) {
-        var so = {
-            detached: options.detached,
-            env: options.env || null
-        };
-
+module.exports = function headless(options, callback) {
+    findFreeServernum(99, function(servernum) {
         var childProcess;
         if (!options) {
             childProcess = spawn('Xvfb', [':' + servernum], so);
         }
         else {
+            var so = {
+                detached: options.detached,
+                env: options.env || null
+            };
             childProcess = spawn(
               'Xvfb',
               [':' + servernum , '-screen' , '0' , options.display.width + 'x' + options.display.height + 'x' + (options.display.depth || 16)].concat(options.args || []),
