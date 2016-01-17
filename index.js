@@ -38,8 +38,11 @@ module.exports = function headless(options, startnum, callback) {
     }
 
     findFreeServernum(startnum, function(servernum) {
-        var so = _.extend({
-        }, (options.env || {}), process.env);
+        var so = {
+            detached: options.detached,
+            env: options.env || null
+        };
+
         var childProcess;
         if (!options) {
             childProcess = spawn('Xvfb', [':' + servernum], so);
