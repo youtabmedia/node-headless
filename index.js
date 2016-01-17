@@ -19,23 +19,17 @@ function findFreeServernum(servernum, callback) {
     });
 }
 
-module.exports = function headless(options, callback) {
+module.exports = function headless(serverNum, options, callback) {
     findFreeServernum(99, function(servernum) {
-        var childProcess;
-        if (!options) {
-            childProcess = spawn('Xvfb', [':' + servernum], so);
-        }
-        else {
-            var so = {
-                detached: options.detached,
-                env: options.env || null
-            };
-            childProcess = spawn(
-              'Xvfb',
-              [':' + servernum , '-screen' , '0' , options.display.width + 'x' + options.display.height + 'x' + (options.display.depth || 16)].concat(options.args || []),
-              so
-            );
-        }
+        var so = {
+            detached: options.detached,
+            env: options.env || null
+        };
+        var childProcess = spawn(
+          'Xvfb',
+          [':' + servernum , '-screen' , '0' , options.display.width + 'x' + options.display.height + 'x' + (options.display.depth || 16)].concat(options.args || []),
+          so
+        );
 
         // assume starting Xvfb takes less than 500 ms and continue if it hasn't
         // exited during that time
@@ -49,7 +43,7 @@ module.exports = function headless(options, callback) {
             cleanUpListeners();
 
             servernum++;
-            headless(servernum, callback);
+            headless(servernum, options, callback);
         }
 
         function onError (err) {
